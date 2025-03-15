@@ -5,12 +5,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
     class file_choose {
 
-    // Opens a file chooser dialog to let the user select an input video file.
-    public static String chooseInputFile() {
+    // Displays a file chooser dialog and returns the selected file's absolute path.
+    public String chooseInputFile() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Select Input Video File");
         
-        // Optional: filter to display only common video file formats.
+        // Filter for common video file types.
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Video Files", "mp4", "avi", "mov", "mkv");
         fileChooser.setFileFilter(filter);
         
@@ -21,9 +21,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
         }
         return null;
     }
-
-    // Creates an output file path by appending "_audio.wav" to the input file name.
-    public static String getOutputFilePath(String inputFilePath) {
+    
+    // Generates an output file path by appending "_audio.wav" to the base name of the input file.
+    public String getOutputFilePath(String inputFilePath) {
         if (inputFilePath != null) {
             int dotIndex = inputFilePath.lastIndexOf('.');
             String baseName = (dotIndex > 0) ? inputFilePath.substring(0, dotIndex) : inputFilePath;
