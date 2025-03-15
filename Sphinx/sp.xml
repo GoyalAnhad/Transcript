@@ -1,0 +1,5 @@
+<dependency>
+    <groupId>edu.cmu.sphinx</groupId>
+    <artifactId>sphinx4-core</artifactId>
+    <version>5prealpha-SNAPSHOT</version>
+</dependency>

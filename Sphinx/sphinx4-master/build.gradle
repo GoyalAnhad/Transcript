@@ -1,4 +1,3 @@
-
 def getRepositoryUsername() {
     return hasProperty('mavenUsername') ? mavenUsername : ""
 }
@@ -7,29 +6,45 @@ def getRepositoryPassword() {
     return hasProperty('mavenPassword') ? mavenPassword : ""
 }
 
-allprojects() {
+allprojects {
     group = 'edu.cmu.sphinx'
     version = '5prealpha-SNAPSHOT'
 }
 
-subprojects() {
+subprojects {
     apply plugin: 'java'
-    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
     
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+    // Use the new 'publishing' block instead of 'uploadArchives'
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                // Attach sources and javadoc if you want
+                artifact packageSources {
+                    classifier "sources"
                 }
-                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+                artifact javadocJar {
+                    classifier "javadoc"
+                }
+            }
+        }
+        repositories {
+            maven {
+                // Use snapshots repository if version ends with SNAPSHOT,
+                // otherwise use the staging repository.
+                url version.endsWith("SNAPSHOT") ? 
+                     uri("https://oss.sonatype.org/content/repositories/snapshots/") : 
+                     uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                credentials {
+                    username = getRepositoryUsername()
+                    password = getRepositoryPassword()
                 }
             }
         }
     }
     
-    repositories() {
+    repositories {
          mavenCentral()
     }
 
@@ -48,5 +63,7 @@ subprojects() {
         from sourceSets.main.allSource
     }
 
-    artifacts.archives packageSources, javadocJar
+    artifacts {
+        archives packageSources, javadocJar
+    }
 }
